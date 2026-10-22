@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+
+<html lang="ca">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="theme-color" content="#245c4f">
+
+<title>La meva economia</title>
+
+<style>
+
+:root {
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  color: #24352f;
+
+  background: #f3f6f4;
+
+}
+
+* { box-sizing: border-box; }
+
+body { margin: 0; }
+
+header {
+
+  background: #245c4f; color: white;
+
+  padding: 22px 16px; text-align: center;
+
+}
+
+header h1 { margin: 0 0 6px; font-size: 25px; }
+
+header p { margin: 0; }
+
+main { max-width: 850px; margin: auto; padding: 16px; }
+
+.card {
+
+  background: white; border-radius: 14px;
+
+  padding: 16px; margin-bottom: 15px;
+
+  box-shadow: 0 2px 8px #0000000b;
+
+}
+
+h2 { font-size: 19px; margin: 0 0 14px; }
+
+label { display: block; font-size: 14px; margin-bottom: 5px; }
+
+input, select, button {
+
+  font: inherit; min-height: 43px; border-radius: 8px;
+
+}
+
+input, select {
+
+  width: 100%; padding: 9px;
+
+  border: 1px solid #cbd5cf; background: white;
+
+}
+
+button {
+
+  padding: 9px 13px; border: 0;
+
+  background: #245c4f; color: white;
+
+  font-weight: 600; cursor: pointer;
+
+}
+
+button.secondary { background: #e5eee9; color: #245c4f; }
+
+button.danger { background: #f9e7e5; color: #8d3029; }
+
+.grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+
+.stats { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+
+.stat { background: #f1f6f2; border-radius: 10px; padding: 12px; min-width: 0; }
+
+.stat span { display: block; font-size: 13px; color: #586b61; }
+
+.stat strong { display: block; margin-top: 6px; font-size: 21px; overflow-wrap: anywhere; }
+
+nav { display: flex; gap: 6px; margin-bottom: 15px; }
+
+nav button { flex: 1; padding: 9px 3px; }
+
+nav button.active { background: #dcebe2; color: #245c4f; }
+
+.row {
+
+  display: grid;
+
+  grid-template-columns: minmax(0,1fr) 75px 75px 40px;
+
+  gap: 6px; align-items: center;
+
+  padding: 10px 0; border-bottom: 1px solid #e4e9e5;
+
+}
+
+.row input { padding: 6px 3px; min-width: 0; }
+
+.muted { color: #64756b; font-size: 13px; }
+
+.months { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+
+.months button { background: white; color: #245c4f; border: 1px solid #d2ded6; }
+
+.months button.active { background: #dcebe2; border: 2px solid #245c4f; }
+
+[hidden] { display: none !important; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.notice { font-size: 13px; color: #586b61; line-height: 1.5; }
+
+@media (max-width: 390px) {
+
+  main { padding: 10px; }
+
+  .row { grid-template-columns: minmax(0,1fr) 63px 63px 32px; gap: 4px; }
+
+  .row input { font-size: 14px; }
+
+  .stat strong { font-size: 18px; }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+  <h1>La meva economia</h1>
+
+  <p>El meu pressupost, mes a mes</p>
+
+</header>
+
+<main>
+
+  <section class="card">
+
+    <div class="grid">
+
+      <div>
+
+        <label for="year">Any</label>
+
+        <select id="year"></select>
+
+      </div>
+
+      <div>
+
+        <label for="month">Mes seleccionat</label>
+
+        <select id="month"></select>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="card">
+
+    <h2>Resum de l'any</h2>
+
+    <div class="stats">
+
+      <div class="stat"><span>Ingressos previstos</span><strong id="annualIP">0 €</strong></div>
+
+      <div class="stat"><span>Despeses previstes</span><strong id="annualDP">0 €</strong></div>
+
+      <div class="stat"><span>Ingressos reals</span><strong id="annualIR">0 €</strong></div>
+
+      <div class="stat"><span>Despeses reals</span><strong id="annualDR">0 €</strong></div>
+
+      <div class="stat"><span>Estalvi previst</span><strong id="annualEP">0 €</strong></div>
+
+      <div class="stat"><span>Estalvi real</span><strong id="annualER">0 €</strong></div>
+
+    </div>
+
+  </section>
+
+  <nav>
+
+    <button class="active" data-tab="mov">Moviments</button>
+
+    <button class="secondary" data-tab="resum">Resum mensual</button>
+
+    <button class="secondary" data-tab="dades">Còpies i dades</button>
+
+  </nav>
+
+  <section id="mov">
+
+    <div class="card">
+
+      <h2 id="monthTitle">Moviments del mes</h2>
+
+      <div class="stats">
+
+        <div class="stat"><span>Balanç previst</span><strong id="monthP">0 €</strong></div>
+
+        <div class="stat"><span>Balanç real</span><strong id="monthR">0 €</strong></div>
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>Afegir un moviment</h2>
+
+      <form id="form">
+
+        <div class="grid">
+
+          <div>
+
+            <label for="type">Tipus</label>
+
+            <select id="type">
+
+              <option value="in">Ingrés</option>
+
+              <option value="out">Despesa</option>
+
+            </select>
+
+          </div>
+
+          <div>
+
+            <label for="concept">Concepte</label>
+
+            <input id="concept" list="concepts" required maxlength="60"
+
+                   placeholder="Ex. alimentació">
+
+            <datalist id="concepts"></datalist>
+
+          </div>
+
+        </div>
+
+        <p>
+
+          <label for="description">Descripció (opcional)</label>
+
+          <input id="description" maxlength="120" placeholder="Ex. rebut de la llum">
+
+        </p>
+
+        <div class="grid">
+
+          <div>
+
+            <label for="planned">Import previst (€)</label>
+
+            <input id="planned" type="number" min="0" max="999999999"
+
+                   step="0.01" placeholder="0,00">
+
+          </div>
+
+          <div>
+
+            <label for="actual">Import real (€)</label>
+
+            <input id="actual" type="number" min="0" max="999999999"
+
+                   step="0.01" placeholder="Pendent">
+
+          </div>
+
+        </div>
+
+        <p><button type="submit">Afegir moviment</button></p>
+
+        <p id="message" class="muted" role="status"></p>
+
+      </form>
+
+    </div>
+
+    <div class="card">
+
+      <h2>Moviments registrats</h2>
+
+      <div class="row muted">
+
+        <span>Concepte</span><span>Previst €</span><span>Real €</span><span></span>
+
+      </div>
+
+      <div id="list"></div>
+
+      <p id="empty" class="muted">Encara no hi ha moviments aquest mes.</p>
+
+    </div>
+
+  </section>
+
+  <section id="resum" hidden>
+
+    <div class="card">
+
+      <h2>Resum dels dotze mesos</h2>
+
+      <div id="monthsSummary"></div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>Comparació entre anys</h2>
+
+      <p class="muted">Els anys que tinguin dades apareixeran aquí.</p>
+
+      <div id="history"></div>
+
+    </div>
+
+  </section>
+
+  <section id="dades" hidden>
+
+    <div class="card">
+
+      <h2>Guardar una còpia de seguretat</h2>
+
+      <p>Exporta totes les dades i desa el fitxer a Fitxers o iCloud Drive.</p>
+
+      <button id="export">Descarregar còpia de seguretat</button>
+
+    </div>
+
+    <div class="card">
+
+      <h2>Recuperar una còpia</h2>
+
+      <p class="notice">La importació substituirà les dades que hi hagi actualment en aquesta aplicació.</p>
+
+      <label for="backup">Selecciona el fitxer de còpia JSON</label>
+
+      <input id="backup" type="file" accept=".json,application/json">
+
+      <p><button id="import" class="secondary">Recuperar les dades</button></p>
+
+      <p id="backupMessage" class="muted" role="status"></p>
+
+    </div>
+
+    <div class="card">
+
+      <h2>Privacitat</h2>
+
+      <p class="notice">Les dades es desen al navegador d'aquest dispositiu. No s'envien a cap servidor per aquesta aplicació. Exporta còpies regularment: les dades del navegador es poden perdre si s'esborren o es canvia de dispositiu.</p>
+
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+
+(function () {
+
+  'use strict';
+
+  const $ = id => document.getElementById(id);
+
+  const monthNames = [
+
+    'Gener','Febrer','Març','Abril','Maig','Juny',
+
+    'Juliol','Agost','Setembre','Octubre','Novembre','Desembre'
+
+  ];
+
+  const defaultConcepts = {
+
+    in: ['Nòmina','Altres ingressos','Pensions','Ingressos extra'],
+
+    out: ['Habitatge','Alimentació','Subministraments','Transport',
+
+          'Salut','Oci','Assegurances','Impostos','Vacances','Altres despeses']
+
+  };
+
+  const STORAGE_KEY = 'la-meva-economia-v1';
+
+  let database = {};
+
+  let nextId = 1;
+
+  let selectedYear = new Date().getFullYear();
+
+  let selectedMonth = new Date().getMonth();
+
+  let concepts = JSON.parse(JSON.stringify(defaultConcepts));
+
+  const money = n => new Intl.NumberFormat('ca-ES', {
+
+    style: 'currency', currency: 'EUR'
+
+  }).format(n || 0);
+
+  const escapeHTML = s => String(s).replace(/[&<>"']/g, c => ({
+
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+
+  })[c]);
+
+  function monthKey(year, month) {
+
+    return year + '-' + String(month + 1).padStart(2, '0');
+
+  }
+
+  function entries(year = selectedYear, month = selectedMonth) {
+
+    const key = monthKey(year, month);
+
+    if (!database[key]) database[key] = [];
+
+    return database[key];
+
+  }
+
+  function save() {
+
+    try {
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+
+        version: 1, database, nextId, concepts
+
+      }));
+
+      $('message').textContent = 'Canvis desats en aquest dispositiu.';
+
+    } catch (e) {
+
+      $('message').textContent =
+
+        'No s’han pogut desar les dades. Exporta una còpia de seguretat.';
+
+    }
+
+  }
+
+  function load() {
+
+    try {
+
+      const saved = localStorage.getItem(STORAGE_KEY);
+
+      if (!saved) return;
+
+      const parsed = JSON.parse(saved);
+
+      if (parsed.version !== 1 || !parsed.database) return;
+
+      database = parsed.database;
+
+      nextId = Number(parsed.nextId) || 1;
+
+      if (parsed.concepts &&
+
+          Array.isArray(parsed.concepts.in) &&
+
+          Array.isArray(parsed.concepts.out)) {
+
+        concepts = parsed.concepts;
+
+      }
+
+    } catch (e) {
+
+      alert('No s’han pogut llegir les dades desades.');
+
+    }
+
+  }
+
+  function totals(year, month = null) {
+
+    const all = Object.entries(database)
+
+      .filter(([key]) => key.startsWith(year + '-') &&
+
+        (month === null || Number(key.slice(5,7)) === month + 1))
+
+      .flatMap(([, rows]) => Array.isArray(rows) ? rows : []);
+
+    const sum = (type, field) => all
+
+      .filter(x => x.type === type && x[field] !== null)
+
+      .reduce((a, x) => a + (Number(x[field]) || 0), 0);
+
+    return {
+
+      ip: sum('in','planned'),
+
+      ir: sum('in','actual'),
+
+      dp: sum('out','planned'),
+
+      dr: sum('out','actual')
+
+    };
+
+  }
+
+  function renderConcepts() {
+
+    $('concepts').innerHTML = concepts[$('type').value]
+
+      .map(c => '<option value="' + escapeHTML(c) + '"></option>')
+
+      .join('');
+
+  }
+
+  function render() {
+
+    const annual = totals(selectedYear);
+
+    $('annualIP').textContent = money(annual.ip);
+
+    $('annualDP').textContent = money(annual.dp);
+
+    $('annualIR').textContent = money(annual.ir);
+
+    $('annualDR').textContent = money(annual.dr);
+
+    $('annualEP').textContent = money(annual.ip - annual.dp);
+
+    $('annualER').textContent = money(annual.ir - annual.dr);
+
+    $('monthTitle').textContent =
+
+      monthNames[selectedMonth] + ' ' + selectedYear;
+
+    const mt = totals(selectedYear, selectedMonth);
+
+    $('monthP').textContent = money(mt.ip - mt.dp);
+
+    $('monthR').textContent = money(mt.ir - mt.dr);
+
+    $('list').innerHTML = entries().map(x => `
+
+      <div class="row">
+
+        <div>
+
+          <strong>${escapeHTML(x.concept)}</strong>
+
+          <div class="muted">${x.type === 'in' ? 'Ingrés' : 'Despesa'}${x.description ? ' · ' + escapeHTML(x.description) : ''}</div>
+
+        </div>
+
+        <input type="number" min="0" step="0.01"
+
+          aria-label="Previst ${escapeHTML(x.concept)}"
+
+          data-id="${x.id}" data-field="planned"
+
+          value="${x.planned === null ? '' : x.planned}" placeholder="—">
+
+        <input type="number" min="0" step="0.01"
+
+          aria-label="Real ${escapeHTML(x.concept)}"
+
+          data-id="${x.id}" data-field="actual"
+
+          value="${x.actual === null ? '' : x.actual}" placeholder="Pendent">
+
+        <button class="danger" data-delete="${x.id}" aria-label="Esborrar">×</button>
+
+      </div>`).join('');
+
+    $('empty').hidden = entries().length > 0;
+
+    $('monthsSummary').innerHTML = monthNames.map((name, i) => {
+
+      const t = totals(selectedYear, i);
+
+      return `<div style="padding:10px 0;border-bottom:1px solid #e4e9e5">
+
+        <strong>${name}</strong>
+
+        <div class="muted">Ingressos reals: ${money(t.ir)}</div>
+
+        <div class="muted">Despeses reals: ${money(t.dr)}</div>
+
+        <div>Estalvi real: <strong>${money(t.ir-t.dr)}</strong></div>
+
+      </div>`;
+
+    }).join('');
+
+    const years = [...new Set([
+
+      selectedYear,
+
+      ...Object.keys(database).map(k => Number(k.slice(0,4)))
+
+    ])].sort((a,b) => b-a);
+
+    $('history').innerHTML = years.map(y => {
+
+      const t = totals(y);
+
+      return `<div style="padding:10px 0;border-bottom:1px solid #e4e9e5">
+
+        <strong>${y}</strong>
+
+        <div class="muted">Ingressos reals: ${money(t.ir)}</div>
+
+        <div class="muted">Despeses reals: ${money(t.dr)}</div>
+
+        <div>Estalvi real: <strong>${money(t.ir-t.dr)}</strong></div>
+
+      </div>`;
+
+    }).join('');
+
+    save();
+
+  }
+
+  function populateYears() {
+
+    const current = new Date().getFullYear();
+
+    const years = new Set();
+
+    for (let y = current - 5; y <= current + 5; y++) years.add(y);
+
+    Object.keys(database).forEach(k => years.add(Number(k.slice(0,4))));
+
+    years.add(selectedYear);
+
+    $('year').innerHTML = [...years].sort((a,b)=>a-b)
+
+      .map(y => `<option value="${y}">${y}</option>`).join('');
+
+    $('year').value = selectedYear;
+
+  }
+
+  $('month').innerHTML = monthNames
+
+    .map((m,i) => `<option value="${i}">${m}</option>`).join('');
+
+  $('month').value = selectedMonth;
+
+  $('year').addEventListener('change', () => {
+
+    selectedYear = Number($('year').value);
+
+    render();
+
+  });
+
+  $('month').addEventListener('change', () => {
+
+    selectedMonth = Number($('month').value);
+
+    render();
+
+  });
+
+  $('type').addEventListener('change', renderConcepts);
+
+  $('form').addEventListener('submit', e => {
+
+    e.preventDefault();
+
+    const concept = $('concept').value.trim();
+
+    const p = $('planned').value.trim();
+
+    const a = $('actual').value.trim();
+
+    if (!concept) {
+
+      $('message').textContent = 'Escriu un concepte.';
+
+      return;
+
+    }
+
+    if (!p && !a) {
+
+      $('message').textContent = 'Introdueix almenys un import.';
+
+      return;
+
+    }
+
+    if ([p,a].some(v => v !== '' &&
+
+      (!Number.isFinite(Number(v)) || Number(v) < 0 || Number(v) > 999999999))) {
+
+      $('message').textContent = 'Revisa els imports introduïts.';
+
+      return;
+
+    }
+
+    const type = $('type').value;
+
+    if (!concepts[type].some(c => c.toLocaleLowerCase() === concept.toLocaleLowerCase())) {
+
+      concepts[type].push(concept);
+
+    }
+
+    entries().push({
+
+      id: nextId++,
+
+      type,
+
+      concept,
+
+      description: $('description').value.trim(),
+
+      planned: p === '' ? null : Number(p),
+
+      actual: a === '' ? null : Number(a)
+
+    });
+
+    $('form').reset();
+
+    renderConcepts();
+
+    render();
+
+  });
+
+  $('list').addEventListener('change', e => {
+
+    const el = e.target;
+
+    if (!el.dataset.id) return;
+
+    const value = el.value.trim();
+
+    if (value !== '' &&
+
+      (!Number.isFinite(Number(value)) || Number(value) < 0 || Number(value) > 999999999)) {
+
+      alert('Import no vàlid.');
+
+      render();
+
+      return;
+
+    }
+
+    const item = entries().find(x => x.id === Number(el.dataset.id));
+
+    if (item) {
+
+      item[el.dataset.field] = value === '' ? null : Number(value);
+
+      render();
+
+    }
+
+  });
+
+  $('list').addEventListener('click', e => {
+
+    const id = e.target.dataset.delete;
+
+    if (!id) return;
+
+    if (!confirm('Vols esborrar aquest moviment?')) return;
+
+    database[monthKey(selectedYear, selectedMonth)] =
+
+      entries().filter(x => x.id !== Number(id));
+
+    render();
+
+  });
+
+  document.querySelectorAll('[data-tab]').forEach(btn => {
+
+    btn.addEventListener('click', () => {
+
+      document.querySelectorAll('[data-tab]').forEach(b => {
+
+        b.classList.toggle('active', b === btn);
+
+        b.classList.toggle('secondary', b !== btn);
+
+      });
+
+      ['mov','resum','dades'].forEach(id => {
+
+        $(id).hidden = id !== btn.dataset.tab;
+
+      });
+
+    });
+
+  });
+
+  $('export').addEventListener('click', () => {
+
+    const file = new Blob([JSON.stringify({
+
+      version: 1, database, nextId, concepts
+
+    }, null, 2)], {type:'application/json'});
+
+    const url = URL.createObjectURL(file);
+
+    const a = document.createElement('a');
+
+    a.href = url;
+
+    a.download = 'copia-la-meva-economia-' + selectedYear + '.json';
+
+    a.click();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+
+  });
+
+  $('import').addEventListener('click', () => {
+
+    const file = $('backup').files[0];
+
+    if (!file) {
+
+      $('backupMessage').textContent = 'Selecciona primer un fitxer.';
+
+      return;
+
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+
+      try {
+
+        const obj = JSON.parse(reader.result);
+
+        if (obj.version !== 1 || !obj.database ||
+
+            !obj.concepts || !Array.isArray(obj.concepts.in) ||
+
+            !Array.isArray(obj.concepts.out)) {
+
+          throw new Error('Fitxer no vàlid');
+
+        }
+
+        if (!confirm('Aquesta acció substituirà les dades actuals. Continuar?')) return;
+
+        database = obj.database;
+
+        nextId = Number(obj.nextId) || 1;
+
+        concepts = obj.concepts;
+
+        populateYears();
+
+        renderConcepts();
+
+        render();
+
+        $('backupMessage').textContent = 'Còpia recuperada correctament.';
+
+      } catch (err) {
+
+        $('backupMessage').textContent = 'No s’ha pogut llegir la còpia.';
+
+      }
+
+    };
+
+    reader.readAsText(file);
+
+  });
+
+  load();
+
+  populateYears();
+
+  renderConcepts();
+
+  render();
+
+})();
+
+</script>
+
+</body>
+
+</html>
